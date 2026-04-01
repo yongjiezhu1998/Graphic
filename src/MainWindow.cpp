@@ -40,7 +40,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QVBoxLayout>
-#ifdef GRAPHICS_DEMO_HAS_SERIAL
+#ifdef DSP_TUNER_HOST_HAS_SERIAL
 #include <QSerialPortInfo>
 #endif
 #include <QSettings>
@@ -115,7 +115,7 @@ void populateDemoScene(QGraphicsScene *scene) {
 } // namespace
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    QSettings settings("GraphicsDemo", "GraphicsDemo");
+    QSettings settings(QStringLiteral("DspTunerHost"), QStringLiteral("DspTunerHost"));
     const QString saved = settings.value("language").toString();
     if (!saved.isEmpty()) {
         m_localeName = saved;
@@ -326,7 +326,7 @@ bool MainWindow::promptSaveIfDirty(DemoView *view) {
     if (path.isEmpty()) {
         QString start = QDir::homePath() + QStringLiteral("/untitled.json");
         path = QFileDialog::getSaveFileName(this, tr("Save scene"), start,
-                                            tr("GraphicsDemo JSON (*.json);;All Files (*)"));
+                                            tr("DSP Tuner scene (*.json);;All Files (*)"));
         if (path.isEmpty()) {
             return false;
         }
@@ -429,7 +429,7 @@ void MainWindow::actionCloseTab() {
 
 void MainWindow::actionOpenSceneInNewTab() {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open scene"), QString(),
-                                                    tr("GraphicsDemo JSON (*.json);;All Files (*)"));
+                                                    tr("DSP Tuner scene (*.json);;All Files (*)"));
     if (path.isEmpty()) {
         return;
     }
@@ -504,7 +504,7 @@ void MainWindow::updateActionStates() {
 
 void MainWindow::switchLanguage(const QString &localeName) {
     m_localeName = localeName;
-    QSettings settings("GraphicsDemo", "GraphicsDemo");
+    QSettings settings(QStringLiteral("DspTunerHost"), QStringLiteral("DspTunerHost"));
     settings.setValue("language", m_localeName);
 
     // Uninstall previous translator
@@ -524,12 +524,12 @@ void MainWindow::installTranslatorForCurrentLocale() {
         return;
     }
 
-    // Load from next to the executable: ./i18n/GraphicsDemo_zh_CN.qm
+    // Load from next to the executable: ./i18n/DspTunerHost_zh_CN.qm
     const QString baseDir = QCoreApplication::applicationDirPath();
     const QStringList candidates = {
-        QDir(baseDir).filePath("i18n/GraphicsDemo_zh_CN.qm"),
-        QDir(baseDir).filePath("GraphicsDemo_zh_CN.qm"),
-        QDir(baseDir).filePath("../GraphicsDemo_zh_CN.qm"),
+        QDir(baseDir).filePath("i18n/DspTunerHost_zh_CN.qm"),
+        QDir(baseDir).filePath("DspTunerHost_zh_CN.qm"),
+        QDir(baseDir).filePath("../DspTunerHost_zh_CN.qm"),
     };
 
     for (const QString &qmPath : candidates) {
@@ -594,7 +594,7 @@ void MainWindow::retranslateUi() {
 }
 
 void MainWindow::updateWindowTitle() {
-    const QString base = tr("Audio patch editor");
+    const QString base = tr("DSP tuning host");
     DemoView *v = currentDemoView();
     if (v && !v->documentPath().isEmpty()) {
         QFileInfo fi(v->documentPath());
@@ -613,7 +613,7 @@ void MainWindow::actionOpenScene() {
         return;
     }
     const QString path = QFileDialog::getOpenFileName(this, tr("Open scene"), QString(),
-                                                      tr("GraphicsDemo JSON (*.json);;All Files (*)"));
+                                                      tr("DSP Tuner scene (*.json);;All Files (*)"));
     if (path.isEmpty()) {
         return;
     }
@@ -657,7 +657,7 @@ void MainWindow::actionSaveAsScene() {
         start = QDir::homePath() + QStringLiteral("/untitled.json");
     }
     const QString path = QFileDialog::getSaveFileName(this, tr("Save scene"), start,
-                                                      tr("GraphicsDemo JSON (*.json);;All Files (*)"));
+                                                      tr("DSP Tuner scene (*.json);;All Files (*)"));
     if (path.isEmpty()) {
         return;
     }
@@ -1163,7 +1163,7 @@ void MainWindow::actionSendPatchSerial() {
 
     auto refreshPorts = [portCombo]() {
         portCombo->clear();
-#ifdef GRAPHICS_DEMO_HAS_SERIAL
+#ifdef DSP_TUNER_HOST_HAS_SERIAL
         const auto ports = QSerialPortInfo::availablePorts();
         if (ports.isEmpty()) {
             portCombo->addItem(QStringLiteral("—"), QString());

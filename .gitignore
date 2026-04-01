@@ -24,3 +24,6 @@ Thumbs.db
 
 # Local scratch / default save dialog
 /untitled.json
+
+# Local docs (not published to remote)
+/docs/

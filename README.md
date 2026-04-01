@@ -1,6 +1,6 @@
-# GraphicsDemo（音频链路图 / DSP 拓扑）
+# DSP调音上位机（音频链路图 / DSP 拓扑）
 
-一个基于 Qt Widgets 的 `QGraphicsScene` 项目，面向**调音/系统工程师**绘制 **音频信号流图**（非实时 DSP，仅拓扑与参数编辑）。
+一个基于 Qt Widgets 的 `QGraphicsScene` 项目，面向**调音/系统工程师**绘制 **音频信号流图**（非实时 DSP，仅拓扑与参数编辑）。CMake 工程与可执行文件名称为 **`DspTunerHost`**。
 
 ## 功能概览
 
@@ -33,13 +33,13 @@
 ```powershell
 cmake -S . -B build
 cmake --build build --config Release
-.\build\Release\GraphicsDemo.exe
+.\build\Release\DspTunerHost.exe
 ```
 
 如果你使用的是单配置生成器（如 Ninja），运行文件通常位于：
 
 ```powershell
-.\build\GraphicsDemo.exe
+.\build\DspTunerHost.exe
 ```
 
 ## 构建与运行（Linux）
@@ -59,10 +59,10 @@ sudo apt install qt6-base-dev qt6-serialport-dev
 ```bash
 cmake -S . -B build
 cmake --build build --config Release
-./build/GraphicsDemo
+./build/DspTunerHost
 ```
 
-使用默认 Makefile 或 Ninja 等单配置生成器时，可执行文件一般为 `./build/GraphicsDemo`（不在 `build/Release/` 子目录下）。
+使用默认 Makefile 或 Ninja 等单配置生成器时，可执行文件一般为 `./build/DspTunerHost`（不在 `build/Release/` 子目录下）。
 
 ## 项目结构
 
@@ -76,8 +76,8 @@ cmake --build build --config Release
 - `ModuleItem.h/.cpp`：模块图元定义（拖拽、选中、锚点计算）
 - `ConnectionItem.h/.cpp`：连接线图元定义（路径更新与箭头绘制）
 - `Commands.h/.cpp`：撤销/重做命令（新增/删除/复制/样式、**MoveItemsCommand** 拖拽移动等）
-- `SceneIo.h/.cpp`：场景 JSON 保存/加载（`format: GraphicsDemoScene`）
-- `CMakeLists.txt`：构建配置（Qt5/Qt6 自动适配）
+- `SceneIo.h/.cpp`：场景 JSON 保存/加载（`format: DspTunerHostScene`；仍可加载旧版 `GraphicsDemoScene`）
+- `CMakeLists.txt`：构建配置（Qt5/Qt6 自动适配；目标名 `DspTunerHost`）
 
 ## 撤销/重做（Undo/Redo）实现难点与解决方案
 
@@ -142,7 +142,7 @@ cmake --build build --config Release
 
 | 难点                | 说明与处理                                                                                                                                                                        |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **可选组件编译**        | 串口依赖 **Qt SerialPort**。CMake 用 `find_package` 检测 `Qt6::SerialPort` / `Qt5::SerialPort`；未找到时定义 `GRAPHICS_DEMO_HAS_SERIAL=0`，`PatchTransport::sendSerial` 在运行期返回明确错误，避免链接期硬依赖。 |
+| **可选组件编译**        | 串口依赖 **Qt SerialPort**。CMake 用 `find_package` 检测 `Qt6::SerialPort` / `Qt5::SerialPort`；未找到时定义 `DSP_TUNER_HOST_HAS_SERIAL=0`，`PatchTransport::sendSerial` 在运行期返回明确错误，避免链接期硬依赖。 |
 | **与 CMake 目标名一致** | 部分发行版包名为 `Qt6SerialPort`，需同时尝试 `find_package(Qt6 COMPONENTS SerialPort)` 与 `find_package(Qt6SerialPort)`，以适配不同安装布局。                                                          |
 | **Linux 串口权限**    | 打开 `/dev/ttyUSB*`、`/dev/ttyACM*` 常出现 **Permission denied**（设备属组多为 `dialout`）。处理：将用户加入 `dialout` 并重新登录；程序在错误串包含 `Permission denied` 时追加一行提示。                                  |
 | **串口「输入/输出错误」**   | 多为 **EIO**：USB 松动、设备掉线、端口被占用、线材/供电问题。属运行时环境与硬件问题，非应用层 JSON 格式错误；需在 UI 文案或文档中区分于「权限不足」。                                                                                       |
@@ -169,6 +169,8 @@ cmake --build build --config Release
 ## 说明
 
 该项目适合作为图形化流程编辑器（例如节点编排、模块连接器）的最小原型参考。
+
+**求职与项目展示**（仓库呈现、简历 bullet、面试叙事、自检清单）：见 [docs/portfolio-qt-jobs.md](docs/portfolio-qt-jobs.md)。
 
 ## TodoList（可补充的操作/功能）
 

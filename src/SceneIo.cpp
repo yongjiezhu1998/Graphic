@@ -20,7 +20,9 @@
 
 namespace {
 
-constexpr const char *kFormatId = "GraphicsDemoScene";
+constexpr const char *kFormatId = "DspTunerHostScene";
+/** Legacy saves from the previous project name still load. */
+constexpr const char *kFormatIdLegacy = "GraphicsDemoScene";
 constexpr int kFormatVersionCurrent = 2;
 
 static QJsonObject moduleStyleToJson(const ModuleItem::Style &s) {
@@ -273,9 +275,10 @@ bool loadScene(QGraphicsScene *scene, QUndoStack *undoStack, const QString &file
     }
 
     const QJsonObject root = doc.object();
-    if (root["format"].toString() != kFormatId) {
+    const QString fmt = root["format"].toString();
+    if (fmt != QLatin1String(kFormatId) && fmt != QLatin1String(kFormatIdLegacy)) {
         if (errorMessage) {
-            *errorMessage = QCoreApplication::translate("SceneIo", "Not a GraphicsDemo scene file.");
+            *errorMessage = QCoreApplication::translate("SceneIo", "Not a valid scene file.");
         }
         return false;
     }

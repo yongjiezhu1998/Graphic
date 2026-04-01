@@ -188,8 +188,8 @@
         <translation>保存场景</translation>
     </message>
     <message>
-        <source>GraphicsDemo JSON (*.json);;All Files (*)</source>
-        <translation>GraphicsDemo JSON (*.json);;所有文件 (*)</translation>
+        <source>DSP Tuner scene (*.json);;All Files (*)</source>
+        <translation>DSP 调音场景 (*.json);;所有文件 (*)</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -316,8 +316,8 @@
         <translation>模块参数(&amp;P)...</translation>
     </message>
     <message>
-        <source>Audio patch editor</source>
-        <translation>音频链路编辑器</translation>
+        <source>DSP tuning host</source>
+        <translation>DSP调音上位机</translation>
     </message>
 </context>
 <context>
@@ -402,8 +402,8 @@
         <translation>场景无效。</translation>
     </message>
     <message>
-        <source>Not a GraphicsDemo scene file.</source>
-        <translation>不是 GraphicsDemo 场景文件。</translation>
+        <source>Not a valid scene file.</source>
+        <translation>不是有效的场景文件。</translation>
     </message>
     <message>
         <source>Unsupported file version.</source>

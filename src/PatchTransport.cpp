@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include <QTcpSocket>
 
-#ifdef GRAPHICS_DEMO_HAS_SERIAL
+#ifdef DSP_TUNER_HOST_HAS_SERIAL
 #include <QSerialPort>
 #endif
 
@@ -41,7 +41,7 @@ bool sendTcp(const QString &host, quint16 port, const QByteArray &jsonPayload, Q
 }
 
 bool sendSerial(const QString &portName, int baudRate, const QByteArray &jsonPayload, QString *errorMessage) {
-#ifndef GRAPHICS_DEMO_HAS_SERIAL
+#ifndef DSP_TUNER_HOST_HAS_SERIAL
     Q_UNUSED(portName);
     Q_UNUSED(baudRate);
     Q_UNUSED(jsonPayload);
@@ -83,7 +83,7 @@ bool sendSerial(const QString &portName, int baudRate, const QByteArray &jsonPay
 }
 
 bool serialSupported() {
-#ifdef GRAPHICS_DEMO_HAS_SERIAL
+#ifdef DSP_TUNER_HOST_HAS_SERIAL
     return true;
 #else
     return false;
