@@ -1,5 +1,7 @@
 #include "AudioPropertiesDialog.h"
 
+#include "FrequencyResponsePlot.h"
+
 #include <QComboBox>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -36,6 +38,8 @@ bool AudioPropertiesDialog::editParams(QWidget *parent, AudioModuleKind kind, Au
     QDoubleSpinBox *eqGainSpin[3] = {};
     QDoubleSpinBox *eqQSpin[3] = {};
 
+    FrequencyResponsePlot *plot = nullptr;
+
     switch (kind) {
     case AudioModuleKind::Gain:
         gainSpin = new QDoubleSpinBox;
@@ -64,6 +68,7 @@ bool AudioPropertiesDialog::editParams(QWidget *parent, AudioModuleKind kind, Au
         form->addRow(QCoreApplication::translate("AudioPropertiesDialog", "Type:"), filterTypeCombo);
         form->addRow(QCoreApplication::translate("AudioPropertiesDialog", "Frequency:"), filterFreqSpin);
         form->addRow(QCoreApplication::translate("AudioPropertiesDialog", "Q:"), filterQSpin);
+        plot = new FrequencyResponsePlot(&dlg);
         break;
     case AudioModuleKind::ParametricEq:
         for (int i = 0; i < 3; ++i) {
@@ -87,6 +92,7 @@ bool AudioPropertiesDialog::editParams(QWidget *parent, AudioModuleKind kind, Au
             form->addRow(QCoreApplication::translate("AudioPropertiesDialog", "Gain:"), eqGainSpin[i]);
             form->addRow(QCoreApplication::translate("AudioPropertiesDialog", "Q:"), eqQSpin[i]);
         }
+        plot = new FrequencyResponsePlot(&dlg);
         break;
     case AudioModuleKind::Crossover2Way:
         xLowSpin = new QDoubleSpinBox;
@@ -120,7 +126,42 @@ bool AudioPropertiesDialog::editParams(QWidget *parent, AudioModuleKind kind, Au
 
     auto *layout = new QVBoxLayout(&dlg);
     layout->addLayout(form);
+    if (plot) {
+        layout->addWidget(plot);
+    }
     layout->addWidget(buttons);
+
+    if (kind == AudioModuleKind::BiquadFilter && plot && filterTypeCombo && filterFreqSpin && filterQSpin) {
+        const auto refreshPlot = [plot, filterTypeCombo, filterFreqSpin, filterQSpin]() {
+            plot->setBiquad(filterTypeCombo->currentIndex(), filterFreqSpin->value(), filterQSpin->value());
+        };
+        refreshPlot();
+        QObject::connect(filterTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), [&](int) { refreshPlot(); });
+        QObject::connect(filterFreqSpin, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double) { refreshPlot(); });
+        QObject::connect(filterQSpin, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double) { refreshPlot(); });
+    } else if (kind == AudioModuleKind::ParametricEq && plot) {
+        const auto refreshEqPlot = [&]() {
+            AudioModuleParams p;
+            for (int i = 0; i < 3; ++i) {
+                if (eqFreqSpin[i]) {
+                    p.eqFreq[i] = eqFreqSpin[i]->value();
+                }
+                if (eqGainSpin[i]) {
+                    p.eqGainDb[i] = eqGainSpin[i]->value();
+                }
+                if (eqQSpin[i]) {
+                    p.eqQ[i] = eqQSpin[i]->value();
+                }
+            }
+            plot->setParametricEq(p);
+        };
+        refreshEqPlot();
+        for (int i = 0; i < 3; ++i) {
+            QObject::connect(eqFreqSpin[i], QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double) { refreshEqPlot(); });
+            QObject::connect(eqGainSpin[i], QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double) { refreshEqPlot(); });
+            QObject::connect(eqQSpin[i], QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double) { refreshEqPlot(); });
+        }
+    }
 
     if (dlg.exec() != QDialog::Accepted) {
         return false;

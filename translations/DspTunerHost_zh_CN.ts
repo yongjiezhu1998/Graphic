@@ -49,6 +49,21 @@
     </message>
 </context>
 <context>
+    <name>FrequencyResponsePlot</name>
+    <message>
+        <source>Magnitude (dB)</source>
+        <translation>幅度（dB）</translation>
+    </message>
+    <message>
+        <source>Fs = %1 Hz</source>
+        <translation>Fs = %1 Hz</translation>
+    </message>
+    <message>
+        <source>20 Hz — 20 kHz (log)</source>
+        <translation>20 Hz — 20 kHz（对数）</translation>
+    </message>
+</context>
+<context>
     <name>AudioTypes</name>
     <message>
         <source>Low-pass</source>

@@ -33,6 +33,7 @@ endif()
 
 add_executable(DspTunerHost
     src/main.cpp
+    include/FrequencyResponsePlot.h
     include/DemoView.h
     src/DemoView.cpp
     src/ModuleItem.cpp
@@ -44,6 +45,7 @@ add_executable(DspTunerHost
     src/SceneIo.cpp
     src/AudioTypes.cpp
     src/AudioPropertiesDialog.cpp
+    src/FrequencyResponsePlot.cpp
     src/ModuleTreeWidget.cpp
     src/PatchTransport.cpp
 )
